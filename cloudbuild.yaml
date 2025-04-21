@@ -9,7 +9,7 @@ steps:
     [
       'build',
       '--no-cache',
-      '-t', 'gcr.io/$PROJECT_ID/PantryPal:$SHORT_SHA',
+      '-t', 'gcr.io/$PROJECT_ID/pantrypal:$SHORT_SHA',
       '.'
     ]
 
