@@ -2,4 +2,6 @@ from flask import Flask
 
 app = Flask(__name__)
 
-System.out.println("Hey, is this Java?");
+@app.route("/")
+def hello_world():
+    return "<p>Hello, World! This is is an update. Did this build work? Now it does.</p>"
