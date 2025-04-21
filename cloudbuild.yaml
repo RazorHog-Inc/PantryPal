@@ -1,0 +1,40 @@
+steps:
+# Build the image
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    [
+      'build',
+      '--no-cache',
+      '-t', 'gcr.io/$PROJECT_ID/$REPO_NAME:$SHORT_SHA',
+      '.'
+    ]
+
+# Run the Flask app
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    [
+      'run',
+      '--rm',
+      '-d',
+      '--name', 'smoke-test',
+      '-p', '8080:8080',
+      'gcr.io/$PROJECT_ID/$REPO_NAME:$SHORT_SHA'
+    ]
+
+# Test health check
+- name: 'gcr.io/cloud-builders/curl'
+  args:
+    [
+      '--retry', '5',
+      '--retry-delay', '1',
+      '--fail',
+      'http://localhost:8080/'
+    ]
+
+# Stop the web app
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    [
+      'stop',
+      'smoke-test'
+    ]
