@@ -5,6 +5,7 @@ options:
 steps:
 # Build the image
 - name: 'gcr.io/cloud-builders/docker'
+  id: Build
   args:
     [
       'build',
@@ -13,32 +14,31 @@ steps:
       '.'
     ]
 
-# Run the Flask app
+# Run the Flask app and test functionality
 - name: 'gcr.io/cloud-builders/docker'
+  id: SmokeTest
+  entrypoint: bash
   args:
-    [
-      'run',
-      '--rm',
-      '-d',
-      '--name', 'smoke-test',
-      '-p', '8080:8080',
-      'gcr.io/$PROJECT_ID/$REPO_NAME:$SHORT_SHA'
-    ]
+    - -c
+    - |
+      set -e
 
-# Test health check
-- name: 'gcr.io/cloud-builders/curl'
-  args:
-    [
-      '--retry', '5',
-      '--retry-delay', '1',
-      '--fail',
-      'http://localhost:8080/'
-    ]
+      # launch your app in the background
+      docker run -d --name smoke gcr.io/$PROJECT_ID/pantrypal:$SHORT_SHA
 
-# Stop the web app
-- name: 'gcr.io/cloud-builders/docker'
-  args:
-    [
-      'stop',
-      'smoke-test'
-    ]
+      echo "Waiting up to 10s for the app to start..."
+      for i in $(seq 1 10); do
+        if docker exec smoke curl --silent --fail http://localhost:8080/; then
+          echo "Smoke test passed!"
+          docker stop smoke
+          exit 0
+        fi
+        echo "Retry #$i..."
+        sleep 1
+      done
+
+      # on failure, show the app logs
+      echo "Smoke test failed; dumping container logs:"
+      docker logs smoke
+      docker stop smoke
+      exit 1
