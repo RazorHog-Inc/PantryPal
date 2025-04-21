@@ -13,32 +13,15 @@ steps:
       '.'
     ]
 
-# Run the Flask app
+# Run the Flask app and test functionality
 - name: 'gcr.io/cloud-builders/docker'
+  id: 'SmokeTest'
+  entrypoint: bash
   args:
-    [
-      'run',
-      '--rm',
-      '-d',
-      '--name', 'smoke-test',
-      '-p', '8080:8080',
-      'gcr.io/$PROJECT_ID/pantrypal:$SHORT_SHA'
-    ]
-
-# Test health check
-- name: 'gcr.io/cloud-builders/curl'
-  args:
-    [
-      '--retry', '5',
-      '--retry-delay', '1',
-      '--fail',
-      'http://localhost:8080/'
-    ]
-
-# Stop the web app
-- name: 'gcr.io/cloud-builders/docker'
-  args:
-    [
-      'stop',
-      'smoke-test'
-    ]
+    - -c
+    - |
+      docker run --rm -d --name smoke -p 8080:8080 \
+        gcr.io/$PROJECT_ID/pantrypal:$SHORT_SHA
+      until curl --retry 5 --retry-delay 1 --fail http://localhost:8080/; do
+        echo "waiting…"; sleep 1
+      done
