@@ -5,7 +5,7 @@ options:
 steps:
 # Build the image
 - name: 'gcr.io/cloud-builders/docker'
-  id: Build
+  id: BuildImage
   args:
     [
       'build',
@@ -16,7 +16,7 @@ steps:
 
 # Run the Flask app and test functionality
 - name: 'gcr.io/cloud-builders/docker'
-  id: SmokeTest
+  id: TestImage
   entrypoint: bash
   args:
     - -c
