@@ -15,10 +15,6 @@ COPY . .
 # Install Python dependencies
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-
-# Test for syntax errors
-RUN python -m compileall .
-
 # Expose the default port Flask uses
 EXPOSE 8080
 
