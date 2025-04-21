@@ -5,7 +5,7 @@ options:
 steps:
 # Build the image
 - name: 'gcr.io/cloud-builders/docker'
-  id: Build
+  id: BuildImage
   args:
     [
       'build',
