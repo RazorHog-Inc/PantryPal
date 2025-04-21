@@ -1,3 +1,7 @@
+options:
+  # Send logs only to Cloud Logging
+  logging: CLOUD_LOGGING_ONLY
+
 steps:
 # Build the image
 - name: 'gcr.io/cloud-builders/docker'
@@ -5,7 +9,7 @@ steps:
     [
       'build',
       '--no-cache',
-      '-t', 'gcr.io/$PROJECT_ID/$REPO_NAME:$SHORT_SHA',
+      '-t', 'gcr.io/$PROJECT_ID/PantryPal:$SHORT_SHA',
       '.'
     ]
 
