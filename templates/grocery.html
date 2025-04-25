@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}PantryPal - Grocery List{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="fas fa-shopping-cart"></i> My Grocery List</h1>
+    <button id="add-grocery-item-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Add Item</button>
+</div>
+
+<div class="search-filter-container">
+    <div class="search-container">
+        <input type="text" id="grocery-search" placeholder="Search items...">
+        <i class="fas fa-search"></i>
+    </div>
+    <div class="filter-container">
+        <select id="grocery-category-filter">
+            <option value="all">All Categories</option>
+            <option value="Fruits">Fruits</option>
+            <option value="Vegetables">Vegetables</option>
+            <option value="Dairy">Dairy</option>
+            <option value="Meat">Meat</option>
+            <option value="Grains">Grains</option>
+            <option value="Canned">Canned</option>
+            <option value="Spices">Spices</option>
+            <option value="Snacks">Snacks</option>
+            <option value="Beverages">Beverages</option>
+            <option value="Baking">Baking</option>
+            <option value="Frozen">Frozen</option>
+            <option value="Condiments">Condiments</option>
+            <option value="Other">Other</option>
+        </select>
+        <select id="status-filter">
+            <option value="all">All Items</option>
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+        </select>
+    </div>
+</div>
+
+<div class="items-container" id="grocery-items-container">
+    <!-- Items will be added here dynamically -->
+    <div class="loading">
+        <i class="fas fa-spinner fa-spin"></i> Loading items...
+    </div>
+</div>
+
+<!-- Add Item Modal -->
+<div id="add-grocery-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-plus"></i> <span id="grocery-modal-title">Add Grocery Item</span></h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="grocery-item-form">
+                <input type="hidden" id="grocery-item-id">
+                <div class="form-group">
+                    <label for="grocery-item-name">Item Name</label>
+                    <input type="text" id="grocery-item-name" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="grocery-item-quantity">Quantity</label>
+                        <input type="number" id="grocery-item-quantity" min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="grocery-item-unit">Unit</label>
+                        <input type="text" id="grocery-item-unit" placeholder="e.g., kg, pcs">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="grocery-item-category">Category</label>
+                    <select id="grocery-item-category">
+                        <option value="Fruits">Fruits</option>
+                        <option value="Vegetables">Vegetables</option>
+                        <option value="Dairy">Dairy</option>
+                        <option value="Meat">Meat</option>
+                        <option value="Grains">Grains</option>
+                        <option value="Canned">Canned</option>
+                        <option value="Spices">Spices</option>
+                        <option value="Snacks">Snacks</option>
+                        <option value="Beverages">Beverages</option>
+                        <option value="Baking">Baking</option>
+                        <option value="Frozen">Frozen</option>
+                        <option value="Condiments">Condiments</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-check" id="completed-container" style="display: none;">
+                    <input type="checkbox" id="grocery-item-completed">
+                    <label for="grocery-item-completed">Mark as Purchased</label>
+                </div>
+                <div id="add-to-pantry-container" style="display: none;">
+                    <div class="form-check">
+                        <input type="checkbox" id="add-to-pantry">
+                        <label for="add-to-pantry">Add to Pantry when Purchased</label>
+                    </div>
+                    <div id="expiry-date-container" style="display: none;">
+                        <div class="form-group">
+                            <label for="grocery-item-expiry">Expiration Date</label>
+                            <input type="date" id="grocery-item-expiry">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="close-grocery-modal-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="save-grocery-item-btn">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/grocery.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}PantryPal - Welcome{% endblock %}
+
+{% block content %}
+<div class="welcome-container">
+    <div class="welcome-content">
+        <h1><i class="fas fa-utensils"></i> PantryPal</h1>
+        <h2>Smart Pantry Management</h2>
+        <p>Keep track of your pantry inventory, get notified about expiring items, and manage your grocery list - all in one place!</p>
+        <div class="welcome-features">
+            <div class="feature">
+                <i class="fas fa-box"></i>
+                <h3>Pantry Inventory</h3>
+                <p>Track what's in your pantry with categories, quantities, and expiration dates.</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-bell"></i>
+                <h3>Expiration Alerts</h3>
+                <p>Receive email notifications when food is about to expire so nothing goes to waste.</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-shopping-cart"></i>
+                <h3>Smart Grocery List</h3>
+                <p>Manage your shopping list and automatically add purchased items to your pantry.</p>
+            </div>
+        </div>
+        <div class="welcome-buttons">
+            <a href="{{ url_for('login') }}" class="btn btn-primary">Get Started</a>
+        </div>
+    </div>
+    <div class="welcome-image">
+        <img src="{{ url_for('static', filename='img/pantry-illustration.svg') }}" alt="PantryPal">
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}PantryPal - Pantry{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="fas fa-box"></i> My Pantry</h1>
+    <button id="add-pantry-item-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Add Item</button>
+</div>
+
+<div class="search-filter-container">
+    <div class="search-container">
+        <input type="text" id="pantry-search" placeholder="Search items...">
+        <i class="fas fa-search"></i>
+    </div>
+    <div class="filter-container">
+        <select id="category-filter">
+            <option value="all">All Categories</option>
+            <option value="Fruits">Fruits</option>
+            <option value="Vegetables">Vegetables</option>
+            <option value="Dairy">Dairy</option>
+            <option value="Meat">Meat</option>
+            <option value="Grains">Grains</option>
+            <option value="Canned">Canned</option>
+            <option value="Spices">Spices</option>
+            <option value="Snacks">Snacks</option>
+            <option value="Beverages">Beverages</option>
+            <option value="Baking">Baking</option>
+            <option value="Frozen">Frozen</option>
+            <option value="Condiments">Condiments</option>
+            <option value="Other">Other</option>
+        </select>
+        <select id="expiry-filter">
+            <option value="all">All Items</option>
+            <option value="expiring">Expiring Soon</option>
+            <option value="expired">Expired</option>
+            <option value="valid">Valid</option>
+        </select>
+        <button id="sort-btn" class="btn btn-small">
+            <i class="fas fa-sort"></i> Sort
+            <div class="sort-dropdown">
+                <div class="sort-option" data-sort="name">Name</div>
+                <div class="sort-option" data-sort="expiry">Expiration Date</div>
+                <div class="sort-option" data-sort="added">Date Added</div>
+            </div>
+        </button>
+    </div>
+</div>
+
+<div class="items-container" id="pantry-items-container">
+    <!-- Items will be added here dynamically -->
+    <div class="loading">
+        <i class="fas fa-spinner fa-spin"></i> Loading items...
+    </div>
+</div>
+
+<!-- Add Item Modal -->
+<div id="add-pantry-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-plus"></i> <span id="modal-title">Add Pantry Item</span></h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="pantry-item-form">
+                <input type="hidden" id="item-id">
+                <div class="form-group">
+                    <label for="item-name">Item Name</label>
+                    <input type="text" id="item-name" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="item-quantity">Quantity</label>
+                        <input type="number" id="item-quantity" min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="item-unit">Unit</label>
+                        <input type="text" id="item-unit" placeholder="e.g., kg, pcs">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="item-category">Category</label>
+                    <select id="item-category">
+                        <option value="Fruits">Fruits</option>
+                        <option value="Vegetables">Vegetables</option>
+                        <option value="Dairy">Dairy</option>
+                        <option value="Meat">Meat</option>
+                        <option value="Grains">Grains</option>
+                        <option value="Canned">Canned</option>
+                        <option value="Spices">Spices</option>
+                        <option value="Snacks">Snacks</option>
+                        <option value="Beverages">Beverages</option>
+                        <option value="Baking">Baking</option>
+                        <option value="Frozen">Frozen</option>
+                        <option value="Condiments">Condiments</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="item-expiry">Expiration Date</label>
+                    <input type="date" id="item-expiry">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="close-modal-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="save-item-btn">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pantry.js') }}"></script>
+{% endblock %}

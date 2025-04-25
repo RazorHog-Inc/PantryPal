@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PantryPal{% endblock %}</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block styles %}{% endblock %}
+</head>
+<body>
+    <div class="app-container">
+        {% if session.get('user') %}
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1><i class="fas fa-utensils"></i> PantryPal</h1>
+            </div>
+            <ul class="sidebar-menu">
+                <li {% if request.path == '/pantry' %}class="active"{% endif %}>
+                    <a href="{{ url_for('pantry') }}"><i class="fas fa-box"></i> Pantry</a>
+                </li>
+                <li {% if request.path == '/grocery' %}class="active"{% endif %}>
+                    <a href="{{ url_for('grocery') }}"><i class="fas fa-shopping-cart"></i> Grocery List</a>
+                </li>
+                <li {% if request.path == '/settings' %}class="active"{% endif %}>
+                    <a href="{{ url_for('settings') }}"><i class="fas fa-cog"></i> Settings</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <p>Logged in as: {{ session.get('user').get('email') }}</p>
+            </div>
+        </nav>
+        {% endif %}
+
+        <main class="content">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
+    <!-- Initialize Firebase -->
+    <script>
+        // Firebase configuration is loaded from the server
+        fetch('/firebase-config')
+            .then(response => response.json())
+            .then(firebaseConfig => {
+                // Initialize Firebase with the config
+                firebase.initializeApp(firebaseConfig);
+            })
+            .catch(error => {
+                console.error('Error loading Firebase configuration:', error);
+            });
+    </script>
+    
+    <!-- Custom JS -->
+    {% block scripts %}{% endblock %}
+</body>
+</html>

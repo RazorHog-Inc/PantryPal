@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}PantryPal - Login{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-form-container">
+        <div class="auth-header">
+            <h1><i class="fas fa-utensils"></i> PantryPal</h1>
+            <div class="auth-tabs">
+                <div class="tab-item active" id="login-tab">Login</div>
+                <div class="tab-item" id="register-tab">Register</div>
+            </div>
+        </div>
+        
+        <!-- Login Form -->
+        <form id="login-form" class="auth-form" action="{{ url_for('login') }}" method="post">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        
+        <!-- Register Form -->
+        <form id="register-form" class="auth-form" action="{{ url_for('register') }}" method="post" style="display: none;">
+            <div class="form-group">
+                <label for="reg-email">Email</label>
+                <input type="email" id="reg-email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="reg-password">Password</label>
+                <input type="password" id="reg-password" name="password" required minlength="6">
+                <small>Password must be at least 6 characters long.</small>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirm-password" required minlength="6">
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    // Tab switching logic
+    document.getElementById('login-tab').addEventListener('click', function() {
+        document.getElementById('login-tab').classList.add('active');
+        document.getElementById('register-tab').classList.remove('active');
+        document.getElementById('login-form').style.display = 'block';
+        document.getElementById('register-form').style.display = 'none';
+    });
+    
+    document.getElementById('register-tab').addEventListener('click', function() {
+        document.getElementById('register-tab').classList.add('active');
+        document.getElementById('login-tab').classList.remove('active');
+        document.getElementById('register-form').style.display = 'block';
+        document.getElementById('login-form').style.display = 'none';
+    });
+    
+    // Password confirmation validation
+    document.getElementById('register-form').addEventListener('submit', function(e) {
+        const password = document.getElementById('reg-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            alert('Passwords do not match!');
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}
