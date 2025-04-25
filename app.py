@@ -436,4 +436,4 @@ def check_expiry_dates(user_id):
 if __name__ == '__main__':
     check_environment_variables()
     debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
-    app.run(debug=debug_mode)
+    app.run(debug=debug_mode, host='0.0.0.0', port=8080)
