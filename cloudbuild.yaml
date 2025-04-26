@@ -112,8 +112,6 @@ availableSecrets:
       env: 'FIREBASE_MEASUREMENT_ID'
     - versionName: projects/$PROJECT_ID/secrets/EMAIL_SMTP_SERVER/versions/latest
       env: 'EMAIL_SMTP_SERVER'
-    - versionName: projects/$PROJECT_ID/secrets/EMAIL_SMTP_PORT/versions/latest
-      env: 'EMAIL_SMTP_PORT'
     - versionName: projects/$PROJECT_ID/secrets/EMAIL_USERNAME/versions/latest
       env: 'EMAIL_USERNAME'
     - versionName: projects/$PROJECT_ID/secrets/EMAIL_PASSWORD/versions/latest
