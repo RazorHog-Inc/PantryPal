@@ -33,6 +33,7 @@ def login_required(f):
 # Routes
 @app.route('/')
 def index():
+    System.out.println("Entered index page")
     if 'user' in session:
         return redirect(url_for('pantry'))
     return render_template('index.html')
