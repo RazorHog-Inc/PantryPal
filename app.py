@@ -434,6 +434,7 @@ def check_expiry_dates(user_id):
         print(f"Error checking expiry dates: {e}")
 
 if __name__ == '__main__':
+    System.out.println("Starting program now");
     check_environment_variables()
     debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
     app.run(debug=debug_mode, host='0.0.0.0', port=8080)
