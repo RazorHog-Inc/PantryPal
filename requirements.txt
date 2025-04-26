@@ -1,5 +1,5 @@
 Flask==2.3.3
-pyrebase4==4.7.1
+pyrebase4==4.8.0
 APScheduler==3.10.4
 python-dotenv==1.0.0
 setuptools>=45.0.0
