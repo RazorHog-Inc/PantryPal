@@ -32,18 +32,18 @@ steps:
         -e FLASK_APP=app.py \
         -e FLASK_RUN_HOST=0.0.0.0 \
         -e FLASK_RUN_PORT=8080 \
-        -e FIREBASE_API_KEY=$$FIREBASE_API_KEY \
-        -e FIREBASE_AUTH_DOMAIN=$$FIREBASE_AUTH_DOMAIN \
-        -e FIREBASE_DATABASE_URL=$$FIREBASE_DATABASE_URL \
-        -e FIREBASE_PROJECT_ID=$$FIREBASE_PROJECT_ID \
-        -e FIREBASE_STORAGE_BUCKET=$$FIREBASE_STORAGE_BUCKET \
-        -e FIREBASE_MESSAGING_SENDER_ID=$$FIREBASE_MESSAGING_SENDER_ID \
-        -e FIREBASE_APP_ID=$$FIREBASE_APP_ID \
-        -e FIREBASE_MEASUREMENT_ID=$$FIREBASE_MEASUREMENT_ID \
-        -e EMAIL_SMTP_SERVER=$$EMAIL_SMTP_SERVER \
+        -e FIREBASE_API_KEY="$$FIREBASE_API_KEY" \
+        -e FIREBASE_AUTH_DOMAIN="$$FIREBASE_AUTH_DOMAIN" \
+        -e FIREBASE_DATABASE_URL="$$FIREBASE_DATABASE_URL" \
+        -e FIREBASE_PROJECT_ID="$$FIREBASE_PROJECT_ID" \
+        -e FIREBASE_STORAGE_BUCKET="$$FIREBASE_STORAGE_BUCKET" \
+        -e FIREBASE_MESSAGING_SENDER_ID="$$FIREBASE_MESSAGING_SENDER_ID" \
+        -e FIREBASE_APP_ID="$$FIREBASE_APP_ID" \
+        -e FIREBASE_MEASUREMENT_ID="$$FIREBASE_MEASUREMENT_ID" \
+        -e EMAIL_SMTP_SERVER="$$EMAIL_SMTP_SERVER" \
         -e EMAIL_SMTP_PORT=587 \
-        -e EMAIL_USERNAME=$$EMAIL_USERNAME \
-        -e EMAIL_PASSWORD=$$EMAIL_PASSWORD \
+        -e EMAIL_USERNAME="$$EMAIL_USERNAME" \
+        -e EMAIL_PASSWORD="$$EMAIL_PASSWORD" \
         gcr.io/$PROJECT_ID/pantrypal:$SHORT_SHA
 
       echo "Waiting up to 10s for the app to start..."
@@ -65,3 +65,56 @@ steps:
       docker images
       docker stop smoke
       exit 1
+  secretEnv: ['FIREBASE_API_KEY','FIREBASE_AUTH_DOMAIN','FIREBASE_DATABASE_URL','FIREBASE_PROJECT_ID','FIREBASE_STORAGE_BUCKET','FIREBASE_MESSAGING_SENDER_ID','FIREBASE_APP_ID','FIREBASE_MEASUREMENT_ID','EMAIL_SMTP_SERVER','EMAIL_USERNAME','EMAIL_PASSWORD']
+
+# Push the image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  id: PushImage
+  args: ['push', 'gcr.io/$PROJECT_ID/pantrypal:$SHORT_SHA']
+
+# Deploy to Cloud Run (only if triggered by Build-on-Main-Update)
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: Deploy
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      if [ "$_DEPLOY_TO_PROD" = "true" ]; then
+        echo "Deploying to Cloud Run..."
+        gcloud run deploy pantrypal \
+          --image=gcr.io/$PROJECT_ID/pantrypal:$SHORT_SHA \
+          --region=us-central1 \
+          --platform=managed \
+          --allow-unauthenticated \
+          --update-secrets=FIREBASE_API_KEY=FIREBASE_API_KEY:latest,FIREBASE_AUTH_DOMAIN=FIREBASE_AUTH_DOMAIN:latest,FIREBASE_DATABASE_URL=FIREBASE_DATABASE_URL:latest,FIREBASE_PROJECT_ID=FIREBASE_PROJECT_ID:latest,FIREBASE_STORAGE_BUCKET=FIREBASE_STORAGE_BUCKET:latest,FIREBASE_MESSAGING_SENDER_ID=FIREBASE_MESSAGING_SENDER_ID:latest,FIREBASE_APP_ID=FIREBASE_APP_ID:latest,FIREBASE_MEASUREMENT_ID=FIREBASE_MEASUREMENT_ID:latest,EMAIL_SMTP_SERVER=EMAIL_SMTP_SERVER:latest,EMAIL_USERNAME=EMAIL_USERNAME:latest,EMAIL_PASSWORD=EMAIL_PASSWORD:latest \
+          --set-env-vars=EMAIL_SMTP_PORT=587
+      else
+        echo "Skipping deployment (not triggered by main branch update)"
+      fi
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/$PROJECT_ID/secrets/FIREBASE_API_KEY/versions/latest
+      env: 'FIREBASE_API_KEY'
+    - versionName: projects/$PROJECT_ID/secrets/FIREBASE_AUTH_DOMAIN/versions/latest
+      env: 'FIREBASE_AUTH_DOMAIN'
+    - versionName: projects/$PROJECT_ID/secrets/FIREBASE_DATABASE_URL/versions/latest
+      env: 'FIREBASE_DATABASE_URL'
+    - versionName: projects/$PROJECT_ID/secrets/FIREBASE_PROJECT_ID/versions/latest
+      env: 'FIREBASE_PROJECT_ID'
+    - versionName: projects/$PROJECT_ID/secrets/FIREBASE_STORAGE_BUCKET/versions/latest
+      env: 'FIREBASE_STORAGE_BUCKET'
+    - versionName: projects/$PROJECT_ID/secrets/FIREBASE_MESSAGING_SENDER_ID/versions/latest
+      env: 'FIREBASE_MESSAGING_SENDER_ID'
+    - versionName: projects/$PROJECT_ID/secrets/FIREBASE_APP_ID/versions/latest
+      env: 'FIREBASE_APP_ID'
+    - versionName: projects/$PROJECT_ID/secrets/FIREBASE_MEASUREMENT_ID/versions/latest
+      env: 'FIREBASE_MEASUREMENT_ID'
+    - versionName: projects/$PROJECT_ID/secrets/EMAIL_SMTP_SERVER/versions/latest
+      env: 'EMAIL_SMTP_SERVER'
+    - versionName: projects/$PROJECT_ID/secrets/EMAIL_SMTP_PORT/versions/latest
+      env: 'EMAIL_SMTP_PORT'
+    - versionName: projects/$PROJECT_ID/secrets/EMAIL_USERNAME/versions/latest
+      env: 'EMAIL_USERNAME'
+    - versionName: projects/$PROJECT_ID/secrets/EMAIL_PASSWORD/versions/latest
+      env: 'EMAIL_PASSWORD'
