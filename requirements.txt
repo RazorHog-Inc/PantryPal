@@ -3,4 +3,3 @@ pyrebase4==4.7.1
 APScheduler==3.10.4
 python-dotenv==1.0.0
 setuptools==70.0.0
-PyYAML==5.1.2
